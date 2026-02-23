@@ -15,7 +15,7 @@ builder.Services.AddSwaggerGen();
 
 // DB Configuration
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
-    options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")));
+    options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 
 // Dependency Injection
 builder.Services.AddScoped<IAuthService, AuthService>();
@@ -43,7 +43,7 @@ builder.Services.AddAuthentication(options =>
     };
 });
 
-// Sessions are now stored in PostgreSQL (users table) — no in-memory session needed
+// Sessions are now stored in MSSQL (users table) — no in-memory session needed
 
 // CORS (to allow local index.html to communicate with API)
 builder.Services.AddCors(options =>

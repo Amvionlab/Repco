@@ -9,11 +9,11 @@ public class User
     public bool IsActive { get; set; } = true;
     public int UserType { get; set; } = 2; // 1 = Admin, 2 = Regular User
     public string? Otp { get; set; }
-    public DateTime? OtpValid { get; set; }
+    public DateTimeOffset? OtpValid { get; set; }
     // Session stored in DB — survives server restarts
     public string? SessionId { get; set; }
-    public DateTime? SessionExpiresAt { get; set; }
-    public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
-    public DateTime UpdatedAt { get; set; } = DateTime.UtcNow;
-    public DateTime? DeletedAt { get; set; }
+    public DateTimeOffset? SessionExpiresAt { get; set; }
+    public DateTimeOffset CreatedAt { get; set; } = DateTimeOffset.UtcNow;
+    public DateTimeOffset UpdatedAt { get; set; } = DateTimeOffset.UtcNow;
+    public DateTimeOffset? DeletedAt { get; set; }
 }

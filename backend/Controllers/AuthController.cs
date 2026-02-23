@@ -83,7 +83,7 @@ public class AuthController : ControllerBase
         // Look up session in DB
         var user = await _context.Users.FirstOrDefaultAsync(u =>
             u.SessionId == sessionId &&
-            u.SessionExpiresAt > DateTime.UtcNow &&
+            u.SessionExpiresAt > DateTimeOffset.Now &&
             u.DeletedAt == null);
 
         if (user == null)

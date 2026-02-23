@@ -37,8 +37,8 @@ public class AuthService : IAuthService
         Console.WriteLine($"[DEBUG] OTP for {request.MobileNumber}: {otp}");
 
         user.Otp = BCrypt.Net.BCrypt.HashPassword(otp);
-        user.OtpValid = DateTime.UtcNow.AddMinutes(1);
-        user.UpdatedAt = DateTime.UtcNow;
+        user.OtpValid = DateTimeOffset.Now.AddMinutes(1);
+        user.UpdatedAt = DateTimeOffset.Now;
 
         await _context.SaveChangesAsync();
         return "OTP sent successfully";
@@ -59,10 +59,10 @@ public class AuthService : IAuthService
         // returns Kind=Unspecified containing local time (IST).
         
         // ToUniversalTime() converts Unspecified → Local → UTC correctly.
-        var otpExpiryUtc = user.OtpValid.Value.ToUniversalTime();
-        Console.WriteLine($"[OTP] Expiry UTC: {otpExpiryUtc:O}  |  Now UTC: {DateTime.UtcNow:O}  |  Expired: {otpExpiryUtc < DateTime.UtcNow}");
+        var otpExpiry = user.OtpValid.Value;
+        Console.WriteLine($"[OTP] Expiry: {otpExpiry}  |  Now: {DateTimeOffset.Now}  |  Expired: {otpExpiry < DateTimeOffset.Now}");
 
-        if (otpExpiryUtc < DateTime.UtcNow)
+        if (otpExpiry < DateTimeOffset.Now)
         {
             Console.WriteLine("[OTP] REJECTED — expired");
             return null;
@@ -76,8 +76,8 @@ public class AuthService : IAuthService
         user.Otp = null;
         user.OtpValid = null;
         user.SessionId = sessionId;
-        user.SessionExpiresAt = DateTime.UtcNow.AddDays(30); // 30-day session
-        user.UpdatedAt = DateTime.UtcNow;
+        user.SessionExpiresAt = DateTimeOffset.Now.AddDays(30); // 30-day session
+        user.UpdatedAt = DateTimeOffset.Now;
         await _context.SaveChangesAsync();
 
         var token = GenerateJwtToken(user.MobileNumber);
@@ -100,7 +100,7 @@ public class AuthService : IAuthService
 
         user.SessionId = null;
         user.SessionExpiresAt = null;
-        user.UpdatedAt = DateTime.UtcNow;
+        user.UpdatedAt = DateTimeOffset.Now;
         await _context.SaveChangesAsync();
         return true;
     }
@@ -132,8 +132,8 @@ public class AuthService : IAuthService
             Email = request.Email,
             UserType = request.UserType,
             IsActive = true,
-            CreatedAt = DateTime.UtcNow,
-            UpdatedAt = DateTime.UtcNow
+            CreatedAt = DateTimeOffset.Now,
+            UpdatedAt = DateTimeOffset.Now
         };
 
         _context.Users.Add(newUser);
@@ -205,7 +205,7 @@ public class AuthService : IAuthService
         if (request.Email != null) user.Email = request.Email;
         if (request.UserType.HasValue) user.UserType = request.UserType.Value;
         if (request.IsActive.HasValue) user.IsActive = request.IsActive.Value;
-        user.UpdatedAt = DateTime.UtcNow;
+        user.UpdatedAt = DateTimeOffset.Now;
 
         await _context.SaveChangesAsync();
 
@@ -237,10 +237,10 @@ public class AuthService : IAuthService
         // Prevent admin from deleting themselves
         if (user.Id == caller.Id) return false;
 
-        user.DeletedAt = DateTime.UtcNow;
+        user.DeletedAt = DateTimeOffset.Now;
         user.SessionId = null;
         user.SessionExpiresAt = null;
-        user.UpdatedAt = DateTime.UtcNow;
+        user.UpdatedAt = DateTimeOffset.Now;
         await _context.SaveChangesAsync();
 
         return true;

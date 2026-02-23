@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "F:\\login_net\\backend\\LoginBackend\\LoginBackend.csproj": {}
+    "F:\\login_net\\repco\\backend\\LoginBackend.csproj": {}
   },
   "projects": {
-    "F:\\login_net\\backend\\LoginBackend\\LoginBackend.csproj": {
+    "F:\\login_net\\repco\\backend\\LoginBackend.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "F:\\login_net\\backend\\LoginBackend\\LoginBackend.csproj",
+        "projectUniqueName": "F:\\login_net\\repco\\backend\\LoginBackend.csproj",
         "projectName": "LoginBackend",
-        "projectPath": "F:\\login_net\\backend\\LoginBackend\\LoginBackend.csproj",
+        "projectPath": "F:\\login_net\\repco\\backend\\LoginBackend.csproj",
         "packagesPath": "C:\\Users\\Ricky\\.nuget\\packages\\",
-        "outputPath": "F:\\login_net\\backend\\LoginBackend\\obj\\",
+        "outputPath": "F:\\login_net\\repco\\backend\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
           "C:\\Users\\Ricky\\AppData\\Roaming\\NuGet\\NuGet.Config"
@@ -46,7 +46,7 @@
               "target": "Package",
               "version": "[8.0.0, )"
             },
-            "Npgsql.EntityFrameworkCore.PostgreSQL": {
+            "Microsoft.EntityFrameworkCore.SqlServer": {
               "target": "Package",
               "version": "[8.0.0, )"
             },
