@@ -1,0 +1,990 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login Test | Antigravity</title>
+    <style>
+        :root {
+            --primary: #6366f1;
+            --primary-hover: #4f46e5;
+            --bg: #0f172a;
+            --card-bg: rgba(30, 41, 59, 0.7);
+            --text: #f8fafc;
+        }
+
+        body {
+            font-family: 'Inter', system-ui, -apple-system, sans-serif;
+            background: radial-gradient(circle at top right, #1e293b, #0f172a);
+            color: var(--text);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: auto;
+            margin: 0;
+            overflow: auto;
+        }
+
+        .login-card {
+            background: var(--card-bg);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            padding: 2.5rem;
+            border-radius: 1.5rem;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+            width: 100%;
+            max-width: 400px;
+            animation: fadeIn 0.8s ease-out;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        h1 {
+            font-size: 1.875rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+            text-align: center;
+            background: linear-gradient(to right, #818cf8, #c084fc);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        p.subtitle {
+            text-align: center;
+            color: #94a3b8;
+            margin-bottom: 2rem;
+            font-size: 0.875rem;
+        }
+
+        .form-group {
+            margin-bottom: 1.25rem;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-size: 0.875rem;
+            font-weight: 500;
+        }
+
+        input {
+            width: 100%;
+            padding: 0.75rem;
+            border-radius: 0.75rem;
+            border: 1px solid #334155;
+            background: #1e293b;
+            color: white;
+            box-sizing: border-box;
+            transition: all 0.2s;
+        }
+
+        input:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.2);
+        }
+
+        button {
+            width: 100%;
+            padding: 0.75rem;
+            border-radius: 0.75rem;
+            border: none;
+            background: var(--primary);
+            color: white;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background 0.2s;
+            margin-top: 1rem;
+        }
+
+        button:hover {
+            background: var(--primary-hover);
+        }
+
+        #result {
+            margin-top: 1.5rem;
+            padding: 1rem;
+            border-radius: 0.75rem;
+            font-size: 0.875rem;
+            display: none;
+            word-break: break-all;
+        }
+
+        .success {
+            background: rgba(34, 197, 94, 0.2);
+            color: #4ade80;
+            border: 1px solid rgba(34, 197, 94, 0.2);
+        }
+
+        .error {
+            background: rgba(239, 68, 68, 0.2);
+            color: #f87171;
+            border: 1px solid rgba(239, 68, 68, 0.2);
+        }
+
+        .btn-secondary {
+            background: transparent;
+            border: 1px solid #334155;
+            margin-top: 0.75rem;
+        }
+
+        .btn-secondary:hover {
+            background: rgba(255, 255, 255, 0.05);
+        }
+
+        .btn-danger {
+            background: rgba(239, 68, 68, 0.15);
+            border: 1px solid rgba(239, 68, 68, 0.3);
+            color: #f87171;
+            margin-top: 0.75rem;
+        }
+
+        .btn-danger:hover {
+            background: rgba(239, 68, 68, 0.25);
+        }
+
+        #dashboard {
+            display: none;
+        }
+
+        .user-badge {
+            text-align: center;
+            margin-bottom: 1.5rem;
+        }
+
+        .user-badge .avatar {
+            width: 64px;
+            height: 64px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #6366f1, #c084fc);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            margin: 0 auto 0.75rem;
+        }
+
+        .user-badge .mobile {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: #f8fafc;
+        }
+
+        .user-badge .status {
+            font-size: 0.8rem;
+            color: #4ade80;
+            margin-top: 0.25rem;
+        }
+
+        .info-row {
+            background: rgba(99, 102, 241, 0.1);
+            border: 1px solid rgba(99, 102, 241, 0.2);
+            border-radius: 0.75rem;
+            padding: 0.75rem 1rem;
+            font-size: 0.8rem;
+            color: #94a3b8;
+            margin-bottom: 0.75rem;
+            word-break: break-all;
+        }
+
+        .info-row span {
+            color: #818cf8;
+            font-weight: 500;
+        }
+
+        .loading {
+            text-align: center;
+            color: #94a3b8;
+            font-size: 0.875rem;
+            padding: 1rem;
+        }
+
+        .user-type-badge {
+            display: inline-block;
+            padding: 0.25rem 0.75rem;
+            border-radius: 999px;
+            font-size: 0.7rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            margin-top: 0.5rem;
+        }
+
+        .badge-admin {
+            background: linear-gradient(135deg, #f59e0b, #ef4444);
+            color: #fff;
+        }
+
+        .badge-user {
+            background: linear-gradient(135deg, #6366f1, #06b6d4);
+            color: #fff;
+        }
+
+        .btn-admin {
+            background: linear-gradient(135deg, #f59e0b, #ef4444);
+            color: white;
+            border: none;
+            margin-top: 0.75rem;
+        }
+
+        .btn-admin:hover {
+            opacity: 0.9;
+            background: linear-gradient(135deg, #d97706, #dc2626);
+        }
+
+        #admin-panel {
+            display: none;
+            margin-top: 1.25rem;
+            padding: 1.25rem;
+            border-radius: 1rem;
+            background: rgba(245, 158, 11, 0.08);
+            border: 1px solid rgba(245, 158, 11, 0.2);
+            animation: fadeIn 0.4s ease-out;
+        }
+
+        #admin-panel h3 {
+            font-size: 1rem;
+            font-weight: 600;
+            margin: 0 0 1rem 0;
+            color: #f59e0b;
+        }
+
+        #admin-panel .form-group {
+            margin-bottom: 0.75rem;
+        }
+
+        #admin-panel select {
+            width: 100%;
+            padding: 0.75rem;
+            border-radius: 0.75rem;
+            border: 1px solid #334155;
+            background: #1e293b;
+            color: white;
+            box-sizing: border-box;
+            transition: all 0.2s;
+            appearance: none;
+        }
+
+        #admin-panel select:focus {
+            outline: none;
+            border-color: #f59e0b;
+            box-shadow: 0 0 0 3px rgba(245, 158, 11, 0.2);
+        }
+
+        .btn-create {
+            background: linear-gradient(135deg, #f59e0b, #ef4444);
+            color: white;
+            border: none;
+        }
+
+        .btn-create:hover {
+            opacity: 0.9;
+        }
+
+        .toast {
+            position: fixed;
+            top: 1.5rem;
+            right: 1.5rem;
+            padding: 1rem 1.5rem;
+            border-radius: 0.75rem;
+            font-size: 0.875rem;
+            font-weight: 500;
+            z-index: 1000;
+            animation: fadeIn 0.3s ease-out;
+            max-width: 350px;
+        }
+
+        .toast-success {
+            background: rgba(34, 197, 94, 0.95);
+            color: #fff;
+        }
+
+        .toast-error {
+            background: rgba(239, 68, 68, 0.95);
+            color: #fff;
+        }
+
+        /* ── Users Table ────────────────────────────── */
+        .users-table-wrap {
+            margin-top: 1.25rem;
+            display: none;
+            animation: fadeIn 0.4s ease-out;
+        }
+
+        .users-table-wrap h3 {
+            font-size: 1rem;
+            font-weight: 600;
+            margin: 0 0 0.75rem 0;
+            color: #818cf8;
+        }
+
+        .users-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 0.78rem;
+        }
+
+        .users-table th {
+            background: rgba(99, 102, 241, 0.15);
+            color: #818cf8;
+            padding: 0.6rem 0.5rem;
+            text-align: left;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.04em;
+            font-size: 0.68rem;
+        }
+
+        .users-table td {
+            padding: 0.55rem 0.5rem;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+            color: #cbd5e1;
+            vertical-align: middle;
+        }
+
+        .users-table tr:hover td {
+            background: rgba(99, 102, 241, 0.06);
+        }
+
+        .users-table .badge-sm {
+            display: inline-block;
+            padding: 0.15rem 0.5rem;
+            border-radius: 999px;
+            font-size: 0.65rem;
+            font-weight: 600;
+        }
+
+        .badge-active {
+            background: rgba(34, 197, 94, 0.2);
+            color: #4ade80;
+        }
+
+        .badge-inactive {
+            background: rgba(239, 68, 68, 0.2);
+            color: #f87171;
+        }
+
+        .action-btns {
+            display: flex;
+            gap: 0.35rem;
+        }
+
+        .action-btns button {
+            width: auto;
+            padding: 0.3rem 0.6rem;
+            font-size: 0.7rem;
+            margin: 0;
+            border-radius: 0.5rem;
+        }
+
+        .btn-edit {
+            background: rgba(99, 102, 241, 0.2);
+            color: #818cf8;
+            border: 1px solid rgba(99, 102, 241, 0.3);
+        }
+
+        .btn-edit:hover {
+            background: rgba(99, 102, 241, 0.35);
+        }
+
+        .btn-del {
+            background: rgba(239, 68, 68, 0.15);
+            color: #f87171;
+            border: 1px solid rgba(239, 68, 68, 0.3);
+        }
+
+        .btn-del:hover {
+            background: rgba(239, 68, 68, 0.3);
+        }
+
+        .card-expanded {
+            max-width: 700px;
+        }
+
+        /* ── Edit Modal ─────────────────────────────── */
+        .modal-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.6);
+            backdrop-filter: blur(4px);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 999;
+            animation: fadeIn 0.2s ease-out;
+        }
+
+        .modal-card {
+            background: #1e293b;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 1.25rem;
+            padding: 2rem;
+            width: 100%;
+            max-width: 380px;
+            animation: fadeIn 0.3s ease-out;
+        }
+
+        .modal-card h3 {
+            font-size: 1.1rem;
+            font-weight: 600;
+            margin: 0 0 1.25rem 0;
+            color: #818cf8;
+        }
+
+        .modal-card .form-group {
+            margin-bottom: 0.75rem;
+        }
+
+        .modal-card label {
+            font-size: 0.8rem;
+        }
+
+        .modal-card input,
+        .modal-card select {
+            width: 100%;
+            padding: 0.6rem;
+            border-radius: 0.6rem;
+            border: 1px solid #334155;
+            background: #0f172a;
+            color: white;
+            box-sizing: border-box;
+            font-size: 0.85rem;
+        }
+
+        .modal-actions {
+            display: flex;
+            gap: 0.5rem;
+            margin-top: 1rem;
+        }
+
+        .modal-actions button {
+            flex: 1;
+            margin: 0;
+        }
+
+        .btn-cancel {
+            background: transparent;
+            border: 1px solid #334155;
+            color: #94a3b8;
+        }
+
+        .btn-cancel:hover {
+            background: rgba(255, 255, 255, 0.05);
+        }
+
+        .confirm-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.5);
+            backdrop-filter: blur(4px);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 1001;
+            animation: fadeIn 0.2s ease-out;
+        }
+
+        .confirm-card {
+            background: #1e293b;
+            border: 1px solid rgba(239, 68, 68, 0.3);
+            border-radius: 1rem;
+            padding: 1.5rem;
+            width: 100%;
+            max-width: 320px;
+            text-align: center;
+        }
+
+        .confirm-card p {
+            color: #cbd5e1;
+            margin: 0 0 1rem 0;
+            font-size: 0.9rem;
+        }
+
+        .confirm-card .modal-actions {
+            justify-content: center;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="login-card">
+        <h1 id="form-title">Login Backend</h1>
+        <p class="subtitle" id="form-subtitle">Test JWT &amp; Session Authentication</p>
+
+        <!-- Loading -->
+        <div id="loading-view" class="loading">Checking session...</div>
+
+        <!-- Login Form -->
+        <div id="login-view" style="display:none;">
+            <div class="form-group">
+                <label for="mobile">Mobile Number</label>
+                <input type="text" id="mobile" placeholder="9876543210">
+            </div>
+            <div class="form-group" id="otp-group" style="display:none;">
+                <label for="otp">Enter OTP</label>
+                <input type="text" id="otp" placeholder="123456">
+            </div>
+
+            <button id="btn-request" onclick="requestOtp()">Send OTP</button>
+            <button id="btn-verify-otp" onclick="login()" style="display:none;">Verify OTP &amp; Sign In</button>
+            <button class="btn-secondary" onclick="checkDb()" style="border-color:#818cf8;color:#818cf8;">Check DB
+                Connection</button>
+        </div>
+
+        <!-- Dashboard -->
+        <div id="dashboard">
+            <div class="user-badge">
+                <div class="avatar">📱</div>
+                <div class="mobile" id="dash-mobile">—</div>
+                <div class="status">● Logged In</div>
+                <div id="user-type-badge"></div>
+            </div>
+            <div class="info-row">
+                <span>Session ID (DB):</span><br>
+                <span id="dash-session">—</span>
+            </div>
+            <button class="btn-secondary" onclick="verifySession()">Re-verify Session</button>
+            <button id="btn-admin-panel" class="btn-admin" onclick="toggleAdminPanel()" style="display:none;">⚙ Admin
+                Panel</button>
+            <button id="btn-view-users" class="btn-secondary" onclick="toggleUsersTable()"
+                style="display:none;border-color:#818cf8;color:#818cf8;">👥 View Users</button>
+            <button class="btn-danger" onclick="logout()">Logout</button>
+
+            <!-- Users Table -->
+            <div id="users-table-wrap" class="users-table-wrap">
+                <h3>👥 All Users</h3>
+                <div style="overflow-x:auto;">
+                    <table class="users-table">
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Name</th>
+                                <th>Mobile</th>
+                                <th>Email</th>
+                                <th>Type</th>
+                                <th>Status</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="users-tbody"></tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Admin Panel -->
+            <div id="admin-panel">
+                <h3>➕ Create New User</h3>
+                <div class="form-group">
+                    <label for="new-name">Full Name</label>
+                    <input type="text" id="new-name" placeholder="John Doe">
+                </div>
+                <div class="form-group">
+                    <label for="new-mobile">Mobile Number</label>
+                    <input type="text" id="new-mobile" placeholder="8888888888">
+                </div>
+                <div class="form-group">
+                    <label for="new-email">Email</label>
+                    <input type="email" id="new-email" placeholder="user@example.com">
+                </div>
+                <div class="form-group">
+                    <label for="new-usertype">User Type</label>
+                    <select id="new-usertype">
+                        <option value="2">User</option>
+                        <option value="1">Admin</option>
+                    </select>
+                </div>
+                <button class="btn-create" onclick="createUser()">Create User</button>
+            </div>
+        </div>
+
+        <div id="result"></div>
+    </div>
+
+    <script>
+        const API_URL = 'http://localhost:5200/api/auth';
+
+        // ── Auto-check on page load ──────────────────────────────────────
+        window.addEventListener('DOMContentLoaded', async () => {
+            const token = localStorage.getItem('jwtToken');
+            const sessionId = localStorage.getItem('sessionId');
+            if (!token || !sessionId) { showView('login'); return; }
+            try {
+                const r = await fetch(`${API_URL}/verify`, {
+                    method: 'GET',
+                    headers: { 'Authorization': `Bearer ${token}`, 'X-Session-Id': sessionId }
+                });
+                const d = await r.json();
+                if (r.ok) {
+                    localStorage.setItem('userType', d.userType);
+                    showDashboard(d.mobileNumber, sessionId, d.userType);
+                } else {
+                    localStorage.removeItem('jwtToken');
+                    localStorage.removeItem('sessionId');
+                    localStorage.removeItem('userType');
+                    showView('login');
+                }
+            } catch { showView('login'); }
+        });
+
+        // ── View helpers ─────────────────────────────────────────────────
+        function showView(view) {
+            document.getElementById('loading-view').style.display = 'none';
+            document.getElementById('login-view').style.display = view === 'login' ? 'block' : 'none';
+            document.getElementById('dashboard').style.display = 'none';
+            document.getElementById('form-title').textContent = 'Login Backend';
+            document.getElementById('form-subtitle').textContent = 'Test JWT & Session Authentication';
+        }
+
+        function showDashboard(mobile, sessionId, userType) {
+            document.getElementById('loading-view').style.display = 'none';
+            document.getElementById('login-view').style.display = 'none';
+            document.getElementById('dashboard').style.display = 'block';
+            document.getElementById('form-title').textContent = 'Welcome Back!';
+            document.getElementById('form-subtitle').textContent = 'Your session is active';
+            document.getElementById('dash-mobile').textContent = mobile || '—';
+            document.getElementById('dash-session').textContent = sessionId || '—';
+
+            // User type badge
+            const badgeEl = document.getElementById('user-type-badge');
+            if (userType === 1) {
+                badgeEl.innerHTML = '<span class="user-type-badge badge-admin">Admin</span>';
+                document.getElementById('btn-admin-panel').style.display = 'block';
+                document.getElementById('btn-view-users').style.display = 'block';
+            } else {
+                badgeEl.innerHTML = '<span class="user-type-badge badge-user">User</span>';
+                document.getElementById('btn-admin-panel').style.display = 'none';
+                document.getElementById('btn-view-users').style.display = 'none';
+            }
+        }
+
+        // ── DB Health ─────────────────────────────────────────────────────
+        async function checkDb() {
+            try {
+                const r = await fetch(`${API_URL}/health`);
+                const d = await r.json();
+                r.ok ? showResult(`DB: ${d.status} — ${d.database}`, 'success')
+                    : showResult(`DB Error: ${d.message}`, 'error');
+            } catch (err) { showResult(`Error: ${err.message}`, 'error'); }
+        }
+
+        // ── Request OTP ───────────────────────────────────────────────────
+        async function requestOtp() {
+            const mobileNumber = document.getElementById('mobile').value;
+            if (!mobileNumber) { showResult('Please enter mobile number', 'error'); return; }
+            try {
+                const r = await fetch(`${API_URL}/request-otp`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ mobileNumber })
+                });
+                const d = await r.json();
+                if (r.ok) {
+                    showResult(d.message + '. Check backend console for OTP.', 'success');
+                    document.getElementById('otp-group').style.display = 'block';
+                    document.getElementById('btn-verify-otp').style.display = 'block';
+                    document.getElementById('btn-request').textContent = 'Resend OTP';
+                } else { showResult(`Error: ${d.message}`, 'error'); }
+            } catch (err) { showResult(`Error: ${err.message}`, 'error'); }
+        }
+
+        // ── Verify OTP & Login ────────────────────────────────────────────
+        async function login() {
+            const mobileNumber = document.getElementById('mobile').value;
+            const otp = document.getElementById('otp').value;
+            try {
+                const r = await fetch(`${API_URL}/verify-otp`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ mobileNumber, otp })
+                });
+                const d = await r.json();
+                if (r.ok) {
+                    localStorage.setItem('jwtToken', d.token);
+                    localStorage.setItem('sessionId', d.sessionId);
+                    localStorage.setItem('userType', d.userType);
+                    showDashboard(mobileNumber, d.sessionId, d.userType);
+                } else { showResult(`Error: ${d.message}`, 'error'); }
+            } catch (err) { showResult(`Error: ${err.message}`, 'error'); }
+        }
+
+        // ── Re-verify Session ─────────────────────────────────────────────
+        async function verifySession() {
+            const token = localStorage.getItem('jwtToken');
+            const sessionId = localStorage.getItem('sessionId');
+            if (!token || !sessionId) { showResult('No session found.', 'error'); return; }
+            try {
+                const r = await fetch(`${API_URL}/verify`, {
+                    method: 'GET',
+                    headers: { 'Authorization': `Bearer ${token}`, 'X-Session-Id': sessionId }
+                });
+                const d = await r.json();
+                r.ok ? showResult(`✓ ${d.message}. Mobile: ${d.mobileNumber}`, 'success')
+                    : showResult(`Failed: ${d.message}`, 'error');
+            } catch (err) { showResult(`Error: ${err.message}`, 'error'); }
+        }
+
+        // ── Logout ────────────────────────────────────────────────────────
+        async function logout() {
+            const token = localStorage.getItem('jwtToken');
+            const sessionId = localStorage.getItem('sessionId');
+            if (token && sessionId) {
+                try {
+                    await fetch(`${API_URL}/logout`, {
+                        method: 'POST',
+                        headers: { 'Authorization': `Bearer ${token}`, 'X-Session-Id': sessionId }
+                    });
+                } catch { /* best effort */ }
+            }
+            localStorage.removeItem('jwtToken');
+            localStorage.removeItem('sessionId');
+            localStorage.removeItem('userType');
+            document.getElementById('otp-group').style.display = 'none';
+            document.getElementById('btn-verify-otp').style.display = 'none';
+            document.getElementById('btn-request').textContent = 'Send OTP';
+            document.getElementById('mobile').value = '';
+            document.getElementById('otp').value = '';
+            document.getElementById('result').style.display = 'none';
+            document.getElementById('admin-panel').style.display = 'none';
+            showView('login');
+        }
+
+        // ── Admin Panel ───────────────────────────────────────────────────
+        function toggleAdminPanel() {
+            const panel = document.getElementById('admin-panel');
+            panel.style.display = panel.style.display === 'none' ? 'block' : 'none';
+        }
+
+        async function createUser() {
+            const name = document.getElementById('new-name').value.trim();
+            const mobileNumber = document.getElementById('new-mobile').value.trim();
+            const email = document.getElementById('new-email').value.trim();
+            const userType = parseInt(document.getElementById('new-usertype').value);
+
+            if (!name || !mobileNumber) {
+                showToast('Name and Mobile Number are required', 'error');
+                return;
+            }
+
+            const token = localStorage.getItem('jwtToken');
+            try {
+                const r = await fetch(`${API_URL}/create-user`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${token}`
+                    },
+                    body: JSON.stringify({ name, mobileNumber, email: email || null, userType })
+                });
+                const d = await r.json();
+                if (r.ok) {
+                    showToast(`✓ ${d.message} — ${d.name} (${d.mobileNumber})`, 'success');
+                    document.getElementById('new-name').value = '';
+                    document.getElementById('new-mobile').value = '';
+                    document.getElementById('new-email').value = '';
+                    document.getElementById('new-usertype').value = '2';
+                    // Refresh users table if visible
+                    if (document.getElementById('users-table-wrap').style.display !== 'none') loadUsers();
+                } else {
+                    showToast(d.message || 'Failed to create user', 'error');
+                }
+            } catch (err) {
+                showToast(`Error: ${err.message}`, 'error');
+            }
+        }
+
+        function showToast(message, type) {
+            const existing = document.querySelector('.toast');
+            if (existing) existing.remove();
+
+            const toast = document.createElement('div');
+            toast.className = `toast toast-${type}`;
+            toast.textContent = message;
+            document.body.appendChild(toast);
+            setTimeout(() => toast.remove(), 4000);
+        }
+
+        // ── Users Table ───────────────────────────────────────────────────
+        function toggleUsersTable() {
+            const wrap = document.getElementById('users-table-wrap');
+            const card = document.querySelector('.login-card');
+            if (wrap.style.display === 'none' || wrap.style.display === '') {
+                loadUsers();
+                wrap.style.display = 'block';
+                card.classList.add('card-expanded');
+            } else {
+                wrap.style.display = 'none';
+                card.classList.remove('card-expanded');
+            }
+        }
+
+        async function loadUsers() {
+            const token = localStorage.getItem('jwtToken');
+            try {
+                const r = await fetch(`${API_URL}/users`, {
+                    headers: { 'Authorization': `Bearer ${token}` }
+                });
+                if (!r.ok) { showToast('Failed to load users', 'error'); return; }
+                const users = await r.json();
+                const tbody = document.getElementById('users-tbody');
+                tbody.innerHTML = users.map(u => `
+                    <tr>
+                        <td>${u.id}</td>
+                        <td>${u.name}</td>
+                        <td>${u.mobileNumber}</td>
+                        <td>${u.email || '—'}</td>
+                        <td><span class="badge-sm ${u.userType === 1 ? 'badge-active' : 'badge-inactive'}">${u.userType === 1 ? 'Admin' : 'User'}</span></td>
+                        <td><span class="badge-sm ${u.isActive ? 'badge-active' : 'badge-inactive'}">${u.isActive ? 'Active' : 'Inactive'}</span></td>
+                        <td>
+                            <div class="action-btns">
+                                <button class="btn-edit" onclick='openEditModal(${JSON.stringify(u)})'>✏️</button>
+                                <button class="btn-del" onclick="confirmDelete(${u.id}, '${u.name}')">🗑️</button>
+                            </div>
+                        </td>
+                    </tr>
+                `).join('');
+            } catch (err) { showToast(`Error: ${err.message}`, 'error'); }
+        }
+
+        // ── Edit User Modal ───────────────────────────────────────────────
+        function openEditModal(user) {
+            const overlay = document.createElement('div');
+            overlay.className = 'modal-overlay';
+            overlay.id = 'edit-modal';
+            overlay.innerHTML = `
+                <div class="modal-card">
+                    <h3>✏️ Edit User #${user.id}</h3>
+                    <div class="form-group">
+                        <label>Name</label>
+                        <input type="text" id="edit-name" value="${user.name}">
+                    </div>
+                    <div class="form-group">
+                        <label>Mobile Number</label>
+                        <input type="text" id="edit-mobile" value="${user.mobileNumber}">
+                    </div>
+                    <div class="form-group">
+                        <label>Email</label>
+                        <input type="email" id="edit-email" value="${user.email || ''}">
+                    </div>
+                    <div class="form-group">
+                        <label>User Type</label>
+                        <select id="edit-usertype">
+                            <option value="2" ${user.userType === 2 ? 'selected' : ''}>User</option>
+                            <option value="1" ${user.userType === 1 ? 'selected' : ''}>Admin</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Status</label>
+                        <select id="edit-active">
+                            <option value="true" ${user.isActive ? 'selected' : ''}>Active</option>
+                            <option value="false" ${!user.isActive ? 'selected' : ''}>Inactive</option>
+                        </select>
+                    </div>
+                    <div class="modal-actions">
+                        <button class="btn-cancel" onclick="closeEditModal()">Cancel</button>
+                        <button class="btn-create" onclick="saveUserEdit(${user.id})">Save</button>
+                    </div>
+                </div>
+            `;
+            document.body.appendChild(overlay);
+        }
+
+        function closeEditModal() {
+            const m = document.getElementById('edit-modal');
+            if (m) m.remove();
+        }
+
+        async function saveUserEdit(userId) {
+            const name = document.getElementById('edit-name').value.trim();
+            const mobileNumber = document.getElementById('edit-mobile').value.trim();
+            const email = document.getElementById('edit-email').value.trim();
+            const userType = parseInt(document.getElementById('edit-usertype').value);
+            const isActive = document.getElementById('edit-active').value === 'true';
+
+            const token = localStorage.getItem('jwtToken');
+            try {
+                const r = await fetch(`${API_URL}/users/${userId}`, {
+                    method: 'PUT',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${token}`
+                    },
+                    body: JSON.stringify({ name, mobileNumber, email: email || null, userType, isActive })
+                });
+                const d = await r.json();
+                if (r.ok) {
+                    showToast(d.message || 'User updated', 'success');
+                    closeEditModal();
+                    loadUsers();
+                } else {
+                    showToast(d.message || 'Update failed', 'error');
+                }
+            } catch (err) {
+                showToast(`Error: ${err.message}`, 'error');
+            }
+        }
+
+        // ── Delete User Confirm ───────────────────────────────────────────
+        function confirmDelete(userId, userName) {
+            const overlay = document.createElement('div');
+            overlay.className = 'confirm-overlay';
+            overlay.id = 'confirm-modal';
+            overlay.innerHTML = `
+                <div class="confirm-card">
+                    <p>Delete <strong>${userName}</strong>?<br><span style="font-size:0.78rem;color:#94a3b8;">This action is a soft delete.</span></p>
+                    <div class="modal-actions">
+                        <button class="btn-cancel" onclick="closeConfirm()">Cancel</button>
+                        <button class="btn-del" style="width:auto;padding:0.6rem 1.2rem;font-size:0.85rem;" onclick="deleteUser(${userId})">Delete</button>
+                    </div>
+                </div>
+            `;
+            document.body.appendChild(overlay);
+        }
+
+        function closeConfirm() {
+            const m = document.getElementById('confirm-modal');
+            if (m) m.remove();
+        }
+
+        async function deleteUser(userId) {
+            const token = localStorage.getItem('jwtToken');
+            try {
+                const r = await fetch(`${API_URL}/users/${userId}`, {
+                    method: 'DELETE',
+                    headers: { 'Authorization': `Bearer ${token}` }
+                });
+                const d = await r.json();
+                if (r.ok) {
+                    showToast(d.message || 'User deleted', 'success');
+                    closeConfirm();
+                    loadUsers();
+                } else {
+                    showToast(d.message || 'Delete failed', 'error');
+                }
+            } catch (err) {
+                showToast(`Error: ${err.message}`, 'error');
+            }
+        }
+
+        // ── Utility ───────────────────────────────────────────────────────
+        function showResult(text, className) {
+            const el = document.getElementById('result');
+            if (!text) { el.style.display = 'none'; return; }
+            el.style.display = 'block';
+            el.textContent = text;
+            el.className = className;
+        }
+    </script>
+</body>
+
+</html>
