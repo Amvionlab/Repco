@@ -27,13 +27,16 @@ public class AuthController : ControllerBase
         try
         {
             var canConnect = await _context.Database.CanConnectAsync();
+            Console.WriteLine(canConnect);
             return canConnect
                 ? Ok(new { Status = "Healthy", Database = "Connected" })
                 : StatusCode(500, new { Status = "Unhealthy", Database = "Connection Failed" });
         }
         catch (Exception ex)
         {
+            Console.WriteLine(ex);
             return StatusCode(500, new { Status = "Error", Message = ex.Message });
+           
         }
     }
 
