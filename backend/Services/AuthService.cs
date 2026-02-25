@@ -31,17 +31,53 @@ public class AuthService : IAuthService
         if (user == null) return null;
 
         if (!user.IsActive)
-            return null; // Inactive users cannot request OTP
+            return null;
 
         var otp = new Random().Next(100000, 999999).ToString();
-        Console.WriteLine($"[DEBUG] OTP for {request.MobileNumber}: {otp}");
 
         user.Otp = BCrypt.Net.BCrypt.HashPassword(otp);
         user.OtpValid = DateTimeOffset.Now.AddMinutes(1);
         user.UpdatedAt = DateTimeOffset.Now;
+        var expiryTime = user.OtpValid?.ToLocalTime().ToString("hh:mm tt");
 
         await _context.SaveChangesAsync();
-        return "OTP sent successfully";
+
+        var url = "https://api.in.kaleyra.io/v1/HXAP16XXXXXX97IN/sms";
+        var apiKey = "Axxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx3";
+
+        using var client = new HttpClient();
+
+        client.DefaultRequestHeaders.Clear();
+        client.DefaultRequestHeaders.Add("api-key", apiKey);
+
+        var formData = new Dictionary<string, string>
+        {
+            { "to", $"+91{request.MobileNumber}" },
+            { "sender", "KLRHXA" },
+            { "type", "OTP" },
+            { "prefix", "+91" },
+            { "body", $"Dear Customer, {otp} is your OTP (One Time Password) for the transaction.Expiry on {expiryTime}" },
+            { "callback_profile_id", "IN_09b3dfa7-e05d-4d84-ab2d-6ed654272XXX" },
+            { "template_id", "101XXXXXX012" }
+        };
+
+        var content = new FormUrlEncodedContent(formData);
+
+        Console.WriteLine("===== OTP API REQUEST =====");
+        foreach (var item in formData)
+        {
+            Console.WriteLine($"{item.Key} : {item.Value}");
+        }
+
+        var response = await client.PostAsync(url, content);
+        var responseString = await response.Content.ReadAsStringAsync();
+
+        Console.WriteLine("===== OTP API RESPONSE =====");
+        Console.WriteLine(responseString);
+
+        return response.IsSuccessStatusCode
+            ? "OTP sent successfully"
+            : "Failed to send OTP";
     }
 
     public async Task<LoginResponse?> VerifyOtpAsync(VerifyOtpRequest request)
