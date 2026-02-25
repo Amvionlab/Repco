@@ -76,8 +76,7 @@ public class AuthController : ControllerBase
     [HttpGet("verify")]
     public async Task<IActionResult> Verify()
     {
-        // Get session ID from Authorization header (passed as custom header) or query
-        // The client sends it in the request header X-Session-Id
+       
         var sessionId = Request.Headers["X-Session-Id"].ToString();
 
         if (string.IsNullOrEmpty(sessionId))
