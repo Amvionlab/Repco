@@ -8,3 +8,4 @@ public class UpdateUserRequest
     public int? UserType { get; set; }
     public bool? IsActive { get; set; }
 }
+
