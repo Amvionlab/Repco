@@ -7,5 +7,4 @@ public interface IMisService
 {
     Task<Mis> CreateAsync(CreateMisRequest request);
     Task<List<Mis>> GetAllAsync();
-    Task<List<Mis>> GetDepositTargetReviewAsync(string value);
 }

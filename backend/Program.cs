@@ -19,6 +19,8 @@ builder.Services.AddDbContext<ApplicationDbContext>(options =>
 
 // Dependency Injection
 builder.Services.AddScoped<IAuthService, AuthService>();
+builder.Services.AddScoped<IDepositMisService, DepositMisService>();
+builder.Services.AddScoped<IAdvancesMisService, AdvancesMisService>();
 builder.Services.AddScoped<IMisService, MisService>();
 
 // JWT Configuration

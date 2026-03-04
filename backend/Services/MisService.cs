@@ -1,7 +1,6 @@
 using LoginBackend.Data;
-using LoginBackend.Models.Request;
-using LoginBackend.Models.Response;
 using LoginBackend.Models.Entities;
+using LoginBackend.Models.Request;
 using Microsoft.EntityFrameworkCore;
 using LoginBackend.Services.Interfaces;
 
@@ -59,54 +58,5 @@ public class MisService : IMisService
     public async Task<List<Mis>> GetAllAsync()
     {
         return await _context.Mis.Take(10).ToListAsync();
-    }
-
-    public async Task<List<Mis>> GetDepositTargetReviewAsync(string value)
-    {
-        string? item = null;
-        if (value == "target_review"){
-           item = "Deposits - Target Review";
-        }
-        else if (value == "major_closure"){
-            item = "Deposits - Major Closure";
-        }
-        else if (value == "target_achieved_branches"){
-            item = "Deposits - Target Achieved Branches";
-        }
-        else if (value == "tenure_wise"){
-            item = "Deposit_Tenure_Wise";
-        }
-        else if (value == "productwise_outstanding"){
-            item = "Deposits - Productwise Outstanding";
-        }
-        else if (value == "state_wise"){
-            item = "Deposit_State_Wise";
-        }
-        else if (value == "constitutionwise"){
-            item = "Deposit_Constitutionwise";
-        }
-        else if (value == "membership"){
-            item = "Deposit_Membership";
-        }
-        else if (value == "major_mobilization"){
-            item = "Deposit-Major Mobilization";
-        }
-        else if (value == "roi_slab"){
-            item = "Deposit_ROI_Slab";
-        }
-        else if (value == "retail_bulk"){
-            item = "Deposit_Retail_Bulk";
-        }
-        else if (value == "residual_maturity"){
-            item = "Deposit_Residual_Maturity";
-        }
-        else {
-            return null;
-        }
-        Console.WriteLine("item: " + item);
-        Console.WriteLine("value: " + value);
-        return await _context.Mis
-            .Where(m => m.Purpose == item)
-            .ToListAsync();
     }
 }

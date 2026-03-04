@@ -9,17 +9,17 @@ namespace LoginBackend.Controllers;
 [Route("api/deposit")]
 public class DepositController : ControllerBase
 {
-    private readonly IMisService _misService;
+    private readonly IDepositMisService _depositService;
 
-    public DepositController(IMisService misService)
+    public DepositController(IDepositMisService depositService)
     {
-        _misService = misService;
+        _depositService = depositService;
     }
 
     [HttpGet("{value}")]
     public async Task<IActionResult> GetDepositTargetReview(string value)
     {
-        var result = await _misService.GetDepositTargetReviewAsync(value);
+        var result = await _depositService.GetDepositTargetReviewAsync(value);
 
         if (result == null)
             return NotFound("Deposits - Target Review not found");

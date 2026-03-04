@@ -13,11 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("LoginBackend")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-<<<<<<< HEAD
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+944b14949c4a4d2103312d851a00f4cab99ed038")]
-=======
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+662d4c2a1d7ff810c2b9a2bf95714a2c31a4c777")]
->>>>>>> apis/deposit
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+8cc17b287ba394fa2518a34226cd30f5f33766fe")]
 [assembly: System.Reflection.AssemblyProductAttribute("LoginBackend")]
 [assembly: System.Reflection.AssemblyTitleAttribute("LoginBackend")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]
