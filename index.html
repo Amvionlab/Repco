@@ -514,6 +514,36 @@
         .confirm-card .modal-actions {
             justify-content: center;
         }
+
+        .api {
+            margin-top: 1rem;
+        }
+
+        .api label {
+            margin-bottom: 0.5rem;
+        }
+
+        .api select {
+            width: 100%;
+            padding: 0.6rem;
+            border-radius: 0.6rem;
+            border: 1px solid #334155;
+            background: #0f172a;
+            color: white;
+            box-sizing: border-box;
+            font-size: 0.85rem;
+        }
+
+        #api-res {
+            margin-top: 1rem;
+            padding: 1rem;
+            background: #0f172a;
+            border-radius: 0.6rem;
+            border: 1px solid #334155;
+            color: white;
+            box-sizing: border-box;
+            font-size: 0.85rem;
+        }
     </style>
 </head>
 
@@ -609,10 +639,30 @@
         </div>
 
         <div id="result"></div>
+        <div class="api">
+            <label for="api-select">Select Deposit API</label>
+            <select name="api-select" id="api-select">
+                <option value="target_review">Target Review</option>
+                <option value="major_closure">Major Closure</option>
+                <option value="target_achieved_branches">Target Achieved Branches</option>
+                <option value="tenure_wise">Tenure Wise</option>
+                <option value="productwise_outstanding">Productwise Outstanding</option>
+                <option value="state_wise">State Wise</option>
+                <option value="constitutionwise">Constitutionwise</option>
+                <option value="membership">Membership</option>
+                <option value="major_mobilization">Major Mobilization</option>
+                <option value="roi_slab">ROI Slab</option>
+                <option value="retail_bulk">Retail Bulk</option>
+                <option value="residual_maturity">Residual Maturity</option>
+            </select>
+            <button onclick="apiRes(document.getElementById('api-select').value)">API Response</button>
+            <div id="api-res"></div>
+        </div>
     </div>
 
     <script>
         const API_URL = 'http://localhost:5200/api/auth';
+        const APIS_URL = 'http://localhost:5200/api';
 
         // ── Auto-check on page load ──────────────────────────────────────
         window.addEventListener('DOMContentLoaded', async () => {
@@ -636,6 +686,37 @@
                 }
             } catch { showView('login'); }
         });
+
+        async function apiRes(value) {
+            try {
+                const token = localStorage.getItem("jwtToken");
+                console.log(token);
+
+                const r = await fetch(`${APIS_URL}/deposit/${value}`, {
+                    method: "GET",
+                    headers: {
+                        "Authorization": `Bearer ${token}`,
+                        "Content-Type": "application/json"
+                    }
+                });
+
+                const d = await r.json();
+                console.log(d);
+
+                r.ok
+                    ? showResult(`Success`, 'success')
+                    : showResult(`DB Error: ${d.message || r.status}`, 'error');
+
+                showRes(d);
+
+            } catch (err) {
+                showResult(`Error: ${err.message}`, 'error');
+            }
+        }
+
+        function showRes(d) {
+            document.getElementById('api-res').textContent = JSON.stringify(d, null, 2);
+        }
 
         // ── View helpers ─────────────────────────────────────────────────
         function showView(view) {
