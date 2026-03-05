@@ -22,6 +22,7 @@ builder.Services.AddScoped<IAuthService, AuthService>();
 builder.Services.AddScoped<IDepositMisService, DepositMisService>();
 builder.Services.AddScoped<IAdvancesMisService, AdvancesMisService>();
 builder.Services.AddScoped<INpaMisService, NpaMisService>();
+builder.Services.AddScoped<IBranchesMisService, BranchesMisService>();
 builder.Services.AddScoped<IMisService, MisService>();
 
 // JWT Configuration
