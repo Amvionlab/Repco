@@ -5,17 +5,20 @@ using Microsoft.EntityFrameworkCore;
 using LoginBackend.Data;
 using LoginBackend.Services;
 using LoginBackend.Services.Interfaces;
+using DotNetEnv;
 
 var builder = WebApplication.CreateBuilder(args);
 
+Env.Load();
 // Add services to the container.
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
+builder.Configuration.AddEnvironmentVariables();
 
 // DB Configuration
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
-    options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
+    options.UseSqlServer(builder.Configuration["DB_CONNECTION"]));
 
 // Dependency Injection
 builder.Services.AddScoped<IAuthService, AuthService>();
@@ -26,8 +29,9 @@ builder.Services.AddScoped<IBranchesMisService, BranchesMisService>();
 builder.Services.AddScoped<IMisService, MisService>();
 
 // JWT Configuration
-var jwtSettings = builder.Configuration.GetSection("Jwt");
-var key = Encoding.UTF8.GetBytes(jwtSettings["Key"]!);
+var key = Encoding.UTF8.GetBytes(builder.Configuration["JWT_KEY"]!);
+var issuer = builder.Configuration["JWT_ISSUER"];
+var audience = builder.Configuration["JWT_AUDIENCE"];
 
 builder.Services.AddAuthentication(options =>
 {
@@ -42,8 +46,8 @@ builder.Services.AddAuthentication(options =>
         ValidateAudience = true,
         ValidateLifetime = true,
         ValidateIssuerSigningKey = true,
-        ValidIssuer = jwtSettings["Issuer"],
-        ValidAudience = jwtSettings["Audience"],
+        ValidIssuer = issuer,
+        ValidAudience = audience,
         IssuerSigningKey = new SymmetricSecurityKey(key)
     };
 });

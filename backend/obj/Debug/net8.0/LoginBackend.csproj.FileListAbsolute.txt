@@ -128,7 +128,6 @@ F:\login_net\repco\backend\obj\Debug\net8.0\LoginBackend.MvcApplicationPartsAsse
 F:\login_net\repco\backend\obj\Debug\net8.0\LoginBackend.MvcApplicationPartsAssemblyInfo.cache
 F:\login_net\repco\backend\obj\Debug\net8.0\LoginBackend.sourcelink.json
 F:\login_net\repco\backend\bin\Debug\net8.0\appsettings.Development.json
-F:\login_net\repco\backend\bin\Debug\net8.0\appsettings.json
 F:\login_net\repco\backend\bin\Debug\net8.0\LoginBackend.exe
 F:\login_net\repco\backend\bin\Debug\net8.0\LoginBackend.deps.json
 F:\login_net\repco\backend\bin\Debug\net8.0\LoginBackend.runtimeconfig.json
@@ -192,3 +191,5 @@ F:\login_net\repco\backend\obj\Debug\net8.0\refint\LoginBackend.dll
 F:\login_net\repco\backend\obj\Debug\net8.0\LoginBackend.pdb
 F:\login_net\repco\backend\obj\Debug\net8.0\LoginBackend.genruntimeconfig.cache
 F:\login_net\repco\backend\obj\Debug\net8.0\ref\LoginBackend.dll
+F:\login_net\repco\backend\bin\Debug\net8.0\DotNetEnv.dll
+F:\login_net\repco\backend\bin\Debug\net8.0\Sprache.dll

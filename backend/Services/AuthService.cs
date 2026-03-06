@@ -42,8 +42,8 @@ public class AuthService : IAuthService
 
         await _context.SaveChangesAsync();
 
-        var url = "https://api.in.kaleyra.io/v1/HXAP16XXXXXX97IN/sms";
-        var apiKey = "Axxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx3";
+        var url = _configuration["OTP_API_URL"];
+        var apiKey = _configuration["OTP_API_KEY"];
 
         using var client = new HttpClient();
 
@@ -58,22 +58,15 @@ public class AuthService : IAuthService
             { "prefix", "+91" },
             { "body", $"Dear Customer, {otp} is your OTP (One Time Password) for the transaction.Expiry on {expiryTime}" },
             { "callback_profile_id", "IN_09b3dfa7-e05d-4d84-ab2d-6ed654272XXX" },
-            { "template_id", "101XXXXXX012" }
+            { "template_id", "101123456012" }
         };
 
         var content = new FormUrlEncodedContent(formData);
 
-        Console.WriteLine("===== OTP API REQUEST =====");
-        foreach (var item in formData)
-        {
-            Console.WriteLine($"{item.Key} : {item.Value}");
-        }
-
         var response = await client.PostAsync(url, content);
         var responseString = await response.Content.ReadAsStringAsync();
 
-        Console.WriteLine("===== OTP API RESPONSE =====");
-        Console.WriteLine(responseString);
+        Console.WriteLine($"OTP sent successfully: {responseString}");
 
         return response.IsSuccessStatusCode
             ? "OTP sent successfully"
@@ -282,11 +275,17 @@ public class AuthService : IAuthService
         return true;
     }
 
-    private string GenerateJwtToken(string username)
+   private string GenerateJwtToken(string username)
     {
-        var jwtSettings = _configuration.GetSection("Jwt");
-        var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtSettings["Key"]!));
+        var key = new SymmetricSecurityKey(
+            Encoding.UTF8.GetBytes(_configuration["JWT_KEY"]!)
+        );
+
         var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
+
+        var issuer = _configuration["JWT_ISSUER"];
+        var audience = _configuration["JWT_AUDIENCE"];
+        var expiry = double.Parse(_configuration["JWT_EXPIRY_MINUTES"]!);
 
         var claims = new[]
         {
@@ -296,10 +295,10 @@ public class AuthService : IAuthService
         };
 
         var token = new JwtSecurityToken(
-            issuer: jwtSettings["Issuer"],
-            audience: jwtSettings["Audience"],
+            issuer: issuer,
+            audience: audience,
             claims: claims,
-            expires: DateTime.Now.AddMinutes(double.Parse(jwtSettings["ExpiryMinutes"]!)),
+            expires: DateTime.Now.AddMinutes(expiry),
             signingCredentials: creds
         );
 

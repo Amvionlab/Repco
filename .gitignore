@@ -531,3 +531,4 @@ coverage/
 
 # Entity Framework
 Migrations/*.Designer.cs
+.env
